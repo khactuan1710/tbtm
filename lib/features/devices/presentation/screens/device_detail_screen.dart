@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:quanlymaygiat/app_router.dart';
 import 'package:quanlymaygiat/core/config/app_config.dart';
 import 'package:quanlymaygiat/core/utils/currency.dart';
@@ -8,6 +9,14 @@ import 'package:quanlymaygiat/features/devices/domain/entities/device_entity.dar
 import 'package:quanlymaygiat/features/devices/domain/entities/service_entity.dart';
 import 'package:quanlymaygiat/features/devices/presentation/cubit/device_detail_cubit.dart';
 import 'package:quanlymaygiat/shared/design_system/design_system.dart';
+
+/// URL khách quét QR trên máy để mở trang thanh toán — khớp đúng format app
+/// Android cũ dùng khi in QR (`CreateDeviceActivity`/`DeviceDetailActivity`:
+/// `<baseUrl>/?maMayGiat=<deviceName>`). QR sinh HOÀN TOÀN client-side (không
+/// gọi API `/generate_qr`, vốn là code chết ở server — xem
+/// SEPAY_INTEGRATION_PLAN.md mục 8), nên không phụ thuộc backend gì thêm.
+String deviceQrUrl(String baseUrl, String deviceName) =>
+    '$baseUrl/?maMayGiat=$deviceName';
 
 @RoutePage()
 class DeviceDetailScreen
@@ -38,6 +47,8 @@ class DeviceDetailScreen
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 _HeaderCard(device: device),
+                Gap(16.s),
+                _QrCard(device: device),
                 Gap(16.s),
                 _LinksCard(device: device),
                 Gap(16.s),
@@ -274,6 +285,70 @@ class _ServiceRow extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: AppColors.primary,
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// QR dán lên máy để khách quét vào trang thanh toán — thay thế tính năng
+/// tạo/in QR trước đây chỉ có ở app Android (mục 8 trong
+/// SEPAY_INTEGRATION_PLAN.md, "còn thiếu" so với app cũ).
+class _QrCard extends StatelessWidget {
+  const _QrCard({required this.device});
+
+  final DeviceEntity device;
+
+  @override
+  Widget build(BuildContext context) {
+    final url = deviceQrUrl(getIt<AppConfig>().baseUrl, device.deviceName);
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const _SectionTitle('QR dán trên máy'),
+          Gap(4.s),
+          Text(
+            'Khách quét mã này để mở trang thanh toán của đúng máy này.',
+            style: TextStyle(fontSize: 12.5.s, color: AppColors.textTertiary),
+          ),
+          Gap(14.s),
+          Center(
+            child: Container(
+              padding: EdgeInsets.all(12.s),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.s),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: QrImageView(data: url, size: 176.s, backgroundColor: Colors.white),
+            ),
+          ),
+          Gap(12.s),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.s, vertical: 8.s),
+            decoration: BoxDecoration(
+              color: AppColors.scaffold,
+              borderRadius: BorderRadius.circular(10.s),
+            ),
+            child: Text(
+              url,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12.s, color: AppColors.textSecondary),
+            ),
+          ),
+          Gap(10.s),
+          AppButton(
+            label: 'Sao chép đường dẫn',
+            icon: Icons.copy_rounded,
+            variant: AppButtonVariant.outlined,
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: url));
+              if (context.mounted) {
+                AppSnackBar.showSuccess(context, 'Đã sao chép đường dẫn');
+              }
+            },
           ),
         ],
       ),
