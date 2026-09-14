@@ -14,7 +14,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DeviceDetailState {
 
- DeviceEntity get device; String get ownerName; bool get isSaving; bool get didChange;
+ DeviceEntity get device; String get ownerName; bool get isSaving; bool get didChange;// Toàn bộ tài khoản (chủ trọ) — để admin chọn khi gán lại thiết bị sang
+// chủ khác (owner_picker.dart, giống màn Tạo thiết bị).
+ List<UserEntity> get owners;
 /// Create a copy of DeviceDetailState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +27,16 @@ $DeviceDetailStateCopyWith<DeviceDetailState> get copyWith => _$DeviceDetailStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceDetailState&&(identical(other.device, device) || other.device == device)&&(identical(other.ownerName, ownerName) || other.ownerName == ownerName)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.didChange, didChange) || other.didChange == didChange));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DeviceDetailState&&(identical(other.device, device) || other.device == device)&&(identical(other.ownerName, ownerName) || other.ownerName == ownerName)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.didChange, didChange) || other.didChange == didChange)&&const DeepCollectionEquality().equals(other.owners, owners));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,device,ownerName,isSaving,didChange);
+int get hashCode => Object.hash(runtimeType,device,ownerName,isSaving,didChange,const DeepCollectionEquality().hash(owners));
 
 @override
 String toString() {
-  return 'DeviceDetailState(device: $device, ownerName: $ownerName, isSaving: $isSaving, didChange: $didChange)';
+  return 'DeviceDetailState(device: $device, ownerName: $ownerName, isSaving: $isSaving, didChange: $didChange, owners: $owners)';
 }
 
 
@@ -45,7 +47,7 @@ abstract mixin class $DeviceDetailStateCopyWith<$Res>  {
   factory $DeviceDetailStateCopyWith(DeviceDetailState value, $Res Function(DeviceDetailState) _then) = _$DeviceDetailStateCopyWithImpl;
 @useResult
 $Res call({
- DeviceEntity device, String ownerName, bool isSaving, bool didChange
+ DeviceEntity device, String ownerName, bool isSaving, bool didChange, List<UserEntity> owners
 });
 
 
@@ -62,13 +64,14 @@ class _$DeviceDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of DeviceDetailState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? device = null,Object? ownerName = null,Object? isSaving = null,Object? didChange = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? device = null,Object? ownerName = null,Object? isSaving = null,Object? didChange = null,Object? owners = null,}) {
   return _then(_self.copyWith(
 device: null == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
 as DeviceEntity,ownerName: null == ownerName ? _self.ownerName : ownerName // ignore: cast_nullable_to_non_nullable
 as String,isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
 as bool,didChange: null == didChange ? _self.didChange : didChange // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,owners: null == owners ? _self.owners : owners // ignore: cast_nullable_to_non_nullable
+as List<UserEntity>,
   ));
 }
 /// Create a copy of DeviceDetailState
@@ -162,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DeviceEntity device,  String ownerName,  bool isSaving,  bool didChange)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( DeviceEntity device,  String ownerName,  bool isSaving,  bool didChange,  List<UserEntity> owners)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DeviceDetailState() when $default != null:
-return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange);case _:
+return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange,_that.owners);case _:
   return orElse();
 
 }
@@ -183,10 +186,10 @@ return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DeviceEntity device,  String ownerName,  bool isSaving,  bool didChange)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( DeviceEntity device,  String ownerName,  bool isSaving,  bool didChange,  List<UserEntity> owners)  $default,) {final _that = this;
 switch (_that) {
 case _DeviceDetailState():
-return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange);case _:
+return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange,_that.owners);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +206,10 @@ return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DeviceEntity device,  String ownerName,  bool isSaving,  bool didChange)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( DeviceEntity device,  String ownerName,  bool isSaving,  bool didChange,  List<UserEntity> owners)?  $default,) {final _that = this;
 switch (_that) {
 case _DeviceDetailState() when $default != null:
-return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange);case _:
+return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange,_that.owners);case _:
   return null;
 
 }
@@ -218,13 +221,24 @@ return $default(_that.device,_that.ownerName,_that.isSaving,_that.didChange);cas
 
 
 class _DeviceDetailState extends DeviceDetailState {
-  const _DeviceDetailState({this.device = const DeviceEntity(), this.ownerName = '', this.isSaving = false, this.didChange = false}): super._();
+  const _DeviceDetailState({this.device = const DeviceEntity(), this.ownerName = '', this.isSaving = false, this.didChange = false, final  List<UserEntity> owners = const <UserEntity>[]}): _owners = owners,super._();
   
 
 @override@JsonKey() final  DeviceEntity device;
 @override@JsonKey() final  String ownerName;
 @override@JsonKey() final  bool isSaving;
 @override@JsonKey() final  bool didChange;
+// Toàn bộ tài khoản (chủ trọ) — để admin chọn khi gán lại thiết bị sang
+// chủ khác (owner_picker.dart, giống màn Tạo thiết bị).
+ final  List<UserEntity> _owners;
+// Toàn bộ tài khoản (chủ trọ) — để admin chọn khi gán lại thiết bị sang
+// chủ khác (owner_picker.dart, giống màn Tạo thiết bị).
+@override@JsonKey() List<UserEntity> get owners {
+  if (_owners is EqualUnmodifiableListView) return _owners;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_owners);
+}
+
 
 /// Create a copy of DeviceDetailState
 /// with the given fields replaced by the non-null parameter values.
@@ -236,16 +250,16 @@ _$DeviceDetailStateCopyWith<_DeviceDetailState> get copyWith => __$DeviceDetailS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceDetailState&&(identical(other.device, device) || other.device == device)&&(identical(other.ownerName, ownerName) || other.ownerName == ownerName)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.didChange, didChange) || other.didChange == didChange));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeviceDetailState&&(identical(other.device, device) || other.device == device)&&(identical(other.ownerName, ownerName) || other.ownerName == ownerName)&&(identical(other.isSaving, isSaving) || other.isSaving == isSaving)&&(identical(other.didChange, didChange) || other.didChange == didChange)&&const DeepCollectionEquality().equals(other._owners, _owners));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,device,ownerName,isSaving,didChange);
+int get hashCode => Object.hash(runtimeType,device,ownerName,isSaving,didChange,const DeepCollectionEquality().hash(_owners));
 
 @override
 String toString() {
-  return 'DeviceDetailState(device: $device, ownerName: $ownerName, isSaving: $isSaving, didChange: $didChange)';
+  return 'DeviceDetailState(device: $device, ownerName: $ownerName, isSaving: $isSaving, didChange: $didChange, owners: $owners)';
 }
 
 
@@ -256,7 +270,7 @@ abstract mixin class _$DeviceDetailStateCopyWith<$Res> implements $DeviceDetailS
   factory _$DeviceDetailStateCopyWith(_DeviceDetailState value, $Res Function(_DeviceDetailState) _then) = __$DeviceDetailStateCopyWithImpl;
 @override @useResult
 $Res call({
- DeviceEntity device, String ownerName, bool isSaving, bool didChange
+ DeviceEntity device, String ownerName, bool isSaving, bool didChange, List<UserEntity> owners
 });
 
 
@@ -273,13 +287,14 @@ class __$DeviceDetailStateCopyWithImpl<$Res>
 
 /// Create a copy of DeviceDetailState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? device = null,Object? ownerName = null,Object? isSaving = null,Object? didChange = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? device = null,Object? ownerName = null,Object? isSaving = null,Object? didChange = null,Object? owners = null,}) {
   return _then(_DeviceDetailState(
 device: null == device ? _self.device : device // ignore: cast_nullable_to_non_nullable
 as DeviceEntity,ownerName: null == ownerName ? _self.ownerName : ownerName // ignore: cast_nullable_to_non_nullable
 as String,isSaving: null == isSaving ? _self.isSaving : isSaving // ignore: cast_nullable_to_non_nullable
 as bool,didChange: null == didChange ? _self.didChange : didChange // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,owners: null == owners ? _self._owners : owners // ignore: cast_nullable_to_non_nullable
+as List<UserEntity>,
   ));
 }
 

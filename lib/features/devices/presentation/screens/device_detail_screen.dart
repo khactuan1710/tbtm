@@ -8,6 +8,8 @@ import 'package:quanlymaygiat/features/auth/data/auth_local_store.dart';
 import 'package:quanlymaygiat/features/devices/domain/entities/device_entity.dart';
 import 'package:quanlymaygiat/features/devices/domain/entities/service_entity.dart';
 import 'package:quanlymaygiat/features/devices/presentation/cubit/device_detail_cubit.dart';
+import 'package:quanlymaygiat/features/devices/presentation/widgets/owner_picker.dart';
+import 'package:quanlymaygiat/features/users/domain/entities/user_entity.dart';
 import 'package:quanlymaygiat/shared/design_system/design_system.dart';
 
 /// URL khách quét QR trên máy để mở trang thanh toán — khớp đúng format app
@@ -541,11 +543,15 @@ class _EditDeviceFormState extends State<_EditDeviceForm> {
   late final TextEditingController _addressCtrl;
   late final TextEditingController _percentCtrl;
   late final List<_ServiceControllers> _services;
+  UserEntity? _selectedOwner;
+
+  bool get _isAdmin => getIt<AuthLocalStore>().currentUser?.isAdmin ?? false;
 
   @override
   void initState() {
     super.initState();
-    final device = context.read<DeviceDetailCubit>().state.device;
+    final state = context.read<DeviceDetailCubit>().state;
+    final device = state.device;
     _deviceTypeCtrl = TextEditingController(text: device.deviceType);
     _machineTypeCtrl = TextEditingController(text: device.machineType);
     _addressCtrl = TextEditingController(text: device.address);
@@ -556,6 +562,18 @@ class _EditDeviceFormState extends State<_EditDeviceForm> {
     );
     _services =
         device.services.map(_ServiceControllers.fromEntity).toList();
+    for (final u in state.owners) {
+      if (u.id == device.userId || u.username == device.userId) {
+        _selectedOwner = u;
+        break;
+      }
+    }
+  }
+
+  Future<void> _pickOwner() async {
+    final cubit = context.read<DeviceDetailCubit>();
+    final selected = await showOwnerPicker(context, cubit.state.owners);
+    if (selected != null) setState(() => _selectedOwner = selected);
   }
 
   @override
@@ -589,6 +607,7 @@ class _EditDeviceFormState extends State<_EditDeviceForm> {
       address: _addressCtrl.text.trim(),
       percentAppDeducted: percent,
       services: _services.map((c) => c.toEntity()).toList(),
+      newOwner: _isAdmin ? _selectedOwner : null,
     );
     Navigator.of(context).pop();
   }
@@ -603,6 +622,24 @@ class _EditDeviceFormState extends State<_EditDeviceForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              if (_isAdmin) ...[
+                AppDropdownField(
+                  label: 'Chủ sở hữu',
+                  valueLabel: _selectedOwner == null
+                      ? null
+                      : (_selectedOwner!.fullName.isNotEmpty
+                            ? _selectedOwner!.fullName
+                            : _selectedOwner!.username),
+                  hint: 'Chọn chủ sở hữu',
+                  prefixIcon: Icon(
+                    Icons.person_outline_rounded,
+                    size: 20.s,
+                    color: AppColors.textTertiary,
+                  ),
+                  onTap: _pickOwner,
+                ),
+                Gap(14.s),
+              ],
               AppTextField(
                 label: 'Loại thiết bị',
                 controller: _deviceTypeCtrl,

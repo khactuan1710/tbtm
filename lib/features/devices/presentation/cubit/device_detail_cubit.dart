@@ -8,6 +8,7 @@ import 'package:quanlymaygiat/features/devices/domain/entities/device_entity.dar
 import 'package:quanlymaygiat/features/devices/domain/entities/service_entity.dart';
 import 'package:quanlymaygiat/features/users/data/mappers/user_mapper.dart';
 import 'package:quanlymaygiat/features/users/data/repositories/users_repository.dart';
+import 'package:quanlymaygiat/features/users/domain/entities/user_entity.dart';
 
 part 'device_detail_cubit.freezed.dart';
 part 'device_detail_state.dart';
@@ -32,10 +33,9 @@ class DeviceDetailCubit extends BaseCubit<DeviceDetailState> {
   }
 
   /// Devices only carry the owner's id; look up the matching user so the detail
-  /// screen can show the owner's name instead of the raw id.
+  /// screen can show the owner's name instead of the raw id. Cũng lưu lại
+  /// toàn bộ danh sách để admin chọn khi gán lại thiết bị sang chủ khác.
   Future<void> _resolveOwnerName() async {
-    final ownerId = _device.userId;
-    if (ownerId.isEmpty) return;
     final res = await executeResult(
       () => _usersRepository.getUsers(),
       isLoading: false,
@@ -43,6 +43,10 @@ class DeviceDetailCubit extends BaseCubit<DeviceDetailState> {
     );
     if (res == null) return;
     final users = _userMapper.toEntities(res.data);
+    emit(state.copyWith(owners: users));
+
+    final ownerId = _device.userId;
+    if (ownerId.isEmpty) return;
     for (final u in users) {
       if (u.id == ownerId || u.username == ownerId) {
         if (u.fullName.isNotEmpty) emit(state.copyWith(ownerName: u.fullName));
@@ -57,11 +61,15 @@ class DeviceDetailCubit extends BaseCubit<DeviceDetailState> {
     required String address,
     required double percentAppDeducted,
     required List<ServiceEntity> services,
+    // Chủ sở hữu MỚI (chỉ admin chọn được — xem _EditDeviceForm) — null nghĩa
+    // là giữ nguyên chủ hiện tại, không đổi gì.
+    UserEntity? newOwner,
   }) async {
     emit(state.copyWith(isSaving: true));
 
+    final ownerId = newOwner?.id ?? state.device.userId;
     final dto = UpdateDeviceRequestDto(
-      userID: state.device.userId,
+      userID: ownerId,
       deviceType: deviceType,
       machineType: machineType,
       address: address,
@@ -79,11 +87,17 @@ class DeviceDetailCubit extends BaseCubit<DeviceDetailState> {
       return;
     }
 
+    final ownerName = newOwner != null
+        ? (newOwner.fullName.isNotEmpty ? newOwner.fullName : newOwner.username)
+        : state.ownerName;
+
     emit(
       state.copyWith(
         isSaving: false,
         didChange: true,
+        ownerName: ownerName,
         device: state.device.copyWith(
+          userId: ownerId,
           deviceType: deviceType,
           machineType: machineType,
           address: address,
