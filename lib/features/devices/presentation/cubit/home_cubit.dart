@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/widgets.dart' show AppLifecycleListener;
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:quanlymaygiat/core/base/base_cubit.dart';
@@ -30,6 +33,14 @@ class HomeCubit extends BaseCubit<HomeState> {
   final DeviceSettingsStore _settingsStore;
   final DeviceMapper _mapper = const DeviceMapper();
 
+  // Trạng thái bật/tắt có thể đổi từ NGOÀI app (thanh toán qua SePay kích
+  // hoạt máy trong lúc user không thao tác gì trong app) — GET /devices
+  // không có realtime, nên tự làm mới định kỳ + mỗi khi app quay lại
+  // foreground để danh sách không bị đứng yên theo trạng thái cũ.
+  Timer? _pollTimer;
+  AppLifecycleListener? _lifecycleListener;
+  static const _pollInterval = Duration(seconds: 20);
+
   void init() {
     emit(
       state.copyWith(
@@ -38,6 +49,20 @@ class HomeCubit extends BaseCubit<HomeState> {
       ),
     );
     loadDevices();
+    _pollTimer = Timer.periodic(
+      _pollInterval,
+      (_) => loadDevices(showLoadingUi: false),
+    );
+    _lifecycleListener = AppLifecycleListener(
+      onResume: () => loadDevices(showLoadingUi: false),
+    );
+  }
+
+  @override
+  Future<void> close() {
+    _pollTimer?.cancel();
+    _lifecycleListener?.dispose();
+    return super.close();
   }
 
   Future<void> loadDevices({bool showLoadingUi = true}) async {
