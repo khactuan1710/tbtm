@@ -4,6 +4,8 @@ import 'package:quanlymaygiat/core/network/model/simple_response.dart';
 import 'package:quanlymaygiat/features/users/data/models/bank_code_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/change_password_request_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/register_request_dto.dart';
+import 'package:quanlymaygiat/features/users/data/models/sepay_config_dto.dart';
+import 'package:quanlymaygiat/features/users/data/models/sepay_secret_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/update_user_request_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/user_dto.dart';
 import 'package:retrofit/retrofit.dart';
@@ -33,4 +35,10 @@ abstract class UsersApiService {
 
   @GET('/bankcodes')
   Future<ApiResponse<List<BankCodeDto>>> getBankCodes();
+
+  @GET('/me/sepay-config')
+  Future<ApiResponse<SepayConfigDto>> getMySepayConfig();
+
+  @POST('/me/sepay-secret/generate')
+  Future<ApiResponse<SepaySecretDto>> generateMySepaySecret();
 }

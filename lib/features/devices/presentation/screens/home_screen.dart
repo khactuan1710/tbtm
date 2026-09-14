@@ -224,6 +224,9 @@ class _ActionGrid extends StatelessWidget {
       _ActionItem(Icons.lock_reset_rounded, 'Đổi mật khẩu', AppColors.statusIdle, () {
         context.router.push(const ChangePasswordRoute());
       }),
+      _ActionItem(Icons.link_rounded, 'Tích hợp SePay', AppColors.success, () {
+        context.router.push(const SepayIntegrationRoute());
+      }),
     ];
 
     return Padding(

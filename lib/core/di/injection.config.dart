@@ -34,6 +34,8 @@ import '../../features/devices/presentation/cubit/device_detail_cubit.dart'
 import '../../features/devices/presentation/cubit/home_cubit.dart' as _i524;
 import '../../features/profile/presentation/cubit/change_password_cubit.dart'
     as _i365;
+import '../../features/profile/presentation/cubit/sepay_integration_cubit.dart'
+    as _i143;
 import '../../features/users/data/di/users_module.dart' as _i418;
 import '../../features/users/data/repositories/users_repository.dart' as _i190;
 import '../../features/users/data/services/users_api_service.dart' as _i948;
@@ -143,6 +145,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i190.UsersRepository>(),
         _device,
       ),
+    );
+    gh.factory<_i143.SepayIntegrationCubit>(
+      () => _i143.SepayIntegrationCubit(gh<_i190.UsersRepository>()),
     );
     gh.factory<_i365.ChangePasswordCubit>(
       () => _i365.ChangePasswordCubit(

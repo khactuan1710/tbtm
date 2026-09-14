@@ -9,6 +9,7 @@ import 'package:quanlymaygiat/features/devices/presentation/screens/create_devic
 import 'package:quanlymaygiat/features/devices/presentation/screens/device_detail_screen.dart';
 import 'package:quanlymaygiat/features/devices/presentation/screens/home_screen.dart';
 import 'package:quanlymaygiat/features/profile/presentation/screens/change_password_screen.dart';
+import 'package:quanlymaygiat/features/profile/presentation/screens/sepay_integration_screen.dart';
 import 'package:quanlymaygiat/features/reports/presentation/screens/report_screen.dart';
 import 'package:quanlymaygiat/features/users/presentation/screens/create_account_screen.dart';
 import 'package:quanlymaygiat/features/users/presentation/screens/user_detail_screen.dart';
@@ -30,5 +31,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: CreateAccountRoute.page),
     AutoRoute(page: ReportRoute.page),
     AutoRoute(page: ChangePasswordRoute.page),
+    AutoRoute(page: SepayIntegrationRoute.page),
   ];
 }

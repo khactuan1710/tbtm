@@ -207,6 +207,22 @@ class ReportRouteArgs {
 }
 
 /// generated route for
+/// [SepayIntegrationScreen]
+class SepayIntegrationRoute extends PageRouteInfo<void> {
+  const SepayIntegrationRoute({List<PageRouteInfo>? children})
+    : super(SepayIntegrationRoute.name, initialChildren: children);
+
+  static const String name = 'SepayIntegrationRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const SepayIntegrationScreen());
+    },
+  );
+}
+
+/// generated route for
 /// [SplashScreen]
 class SplashRoute extends PageRouteInfo<void> {
   const SplashRoute({List<PageRouteInfo>? children})

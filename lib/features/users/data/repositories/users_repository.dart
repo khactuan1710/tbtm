@@ -7,6 +7,8 @@ import 'package:quanlymaygiat/core/utils/typedefs.dart';
 import 'package:quanlymaygiat/features/users/data/models/bank_code_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/change_password_request_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/register_request_dto.dart';
+import 'package:quanlymaygiat/features/users/data/models/sepay_config_dto.dart';
+import 'package:quanlymaygiat/features/users/data/models/sepay_secret_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/update_user_request_dto.dart';
 import 'package:quanlymaygiat/features/users/data/models/user_dto.dart';
 import 'package:quanlymaygiat/features/users/data/services/users_api_service.dart';
@@ -22,6 +24,8 @@ abstract class UsersRepository {
     ChangePasswordRequestDto request,
   );
   Future<Result<ApiResponse<List<BankCodeDto>>>> getBankCodes();
+  Future<Result<ApiResponse<SepayConfigDto>>> getMySepayConfig();
+  Future<Result<ApiResponse<SepaySecretDto>>> generateMySepaySecret();
 }
 
 @LazySingleton(as: UsersRepository)
@@ -52,4 +56,12 @@ class UsersRepositoryImpl implements UsersRepository {
   @override
   Future<Result<ApiResponse<List<BankCodeDto>>>> getBankCodes() =>
       runSafely(() async => right(await _api.getBankCodes()));
+
+  @override
+  Future<Result<ApiResponse<SepayConfigDto>>> getMySepayConfig() =>
+      runSafely(() async => right(await _api.getMySepayConfig()));
+
+  @override
+  Future<Result<ApiResponse<SepaySecretDto>>> generateMySepaySecret() =>
+      runSafely(() async => right(await _api.generateMySepaySecret()));
 }
