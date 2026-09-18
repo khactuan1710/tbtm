@@ -37,6 +37,8 @@ class _CreateAccountViewState extends State<_CreateAccountView> {
   final _percentController = TextEditingController();
   final _bankAccountNumberController = TextEditingController();
   final _bankAccountNameController = TextEditingController();
+  final _eWeLinkAccountController = TextEditingController();
+  final _eWeLinkPasswordController = TextEditingController();
 
   @override
   void dispose() {
@@ -48,6 +50,8 @@ class _CreateAccountViewState extends State<_CreateAccountView> {
     _percentController.dispose();
     _bankAccountNumberController.dispose();
     _bankAccountNameController.dispose();
+    _eWeLinkAccountController.dispose();
+    _eWeLinkPasswordController.dispose();
     super.dispose();
   }
 
@@ -61,6 +65,8 @@ class _CreateAccountViewState extends State<_CreateAccountView> {
       percentText: _percentController.text,
       bankAccountNumber: _bankAccountNumberController.text,
       bankAccountName: _bankAccountNameController.text,
+      eWeLinkAccount: _eWeLinkAccountController.text,
+      eWeLinkPassword: _eWeLinkPasswordController.text,
     );
   }
 
@@ -163,8 +169,25 @@ class _CreateAccountViewState extends State<_CreateAccountView> {
                   Gap(16.s),
                   AppTextField(
                     label: 'Địa chỉ',
+                    isRequired: true,
                     controller: _addressController,
                     hint: 'Nhập địa chỉ',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  Gap(16.s),
+                  AppTextField(
+                    label: 'Tài khoản eWeLink',
+                    isRequired: true,
+                    controller: _eWeLinkAccountController,
+                    hint: 'Nhập tài khoản eWeLink',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  Gap(16.s),
+                  AppPasswordField(
+                    label: 'Mật khẩu eWeLink',
+                    isRequired: true,
+                    controller: _eWeLinkPasswordController,
+                    hint: 'Nhập mật khẩu eWeLink',
                     textInputAction: TextInputAction.next,
                   ),
                   Gap(16.s),
