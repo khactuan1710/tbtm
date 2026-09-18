@@ -37,8 +37,15 @@ class _CreateAccountViewState extends State<_CreateAccountView> {
   final _percentController = TextEditingController();
   final _bankAccountNumberController = TextEditingController();
   final _bankAccountNameController = TextEditingController();
-  final _eWeLinkAccountController = TextEditingController();
-  final _eWeLinkPasswordController = TextEditingController();
+  // Server bắt buộc 2 trường này nhưng KHÔNG dùng để điều khiển thiết bị
+  // thật (bật/tắt máy luôn qua 1 tài khoản admin eWeLink riêng, hardcode ở
+  // server) — điền sẵn cùng giá trị mặc định app Android đang dùng
+  // (CreateAccountActivity.java, setText lúc mở màn) để chủ trọ không cần
+  // hiểu/tự nhập gì, vẫn có thể sửa nếu thật sự cần tài khoản riêng.
+  final _eWeLinkAccountController = TextEditingController(
+    text: 'khachuong.vn@gmail.com',
+  );
+  final _eWeLinkPasswordController = TextEditingController(text: 'devup@2023');
 
   @override
   void dispose() {
